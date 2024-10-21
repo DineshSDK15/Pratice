@@ -1,0 +1,336 @@
+<div class="main-diff-viewer">
+    <div class="filter-container">
+        <div class="input-container">
+            <div class="title-container" style="display:flex ;">
+                <mat-icon>compare</mat-icon>
+                <span>USER GROUP COMPARISON : </span>
+            </div>
+            <span style="font-weight: 500;">Group1:</span>
+            <mat-select class="min-select" [(ngModel)]="group1" (ngModelChange)="getSelectedGroupData()"
+                style="width: 200px; margin: 10px;" disableOptionCentering>
+                <mat-option>
+                    <ngx-mat-select-search placeholderLabel="Find GroupName..." [(ngModel)]="selectedGroup1"
+                        noEntriesFoundLabel='Groupname Not Found'>
+                    </ngx-mat-select-search>
+                </mat-option>
+                <ng-container *ngFor="let group of  groupNames">
+                    <mat-option [style.background-color]="group.status== 'inactive'?'#efefef':'unset'" [style.color]="group.status== 'inactive'?'lightslategray':'unset'"*ngIf="group.groupLabel?.toLowerCase().includes(selectedGroup1?.toLowerCase())"
+                        [value]="[group.groupLabel,group.grpRoleStr]">
+                        <span [matTooltip]="group.groupLabel">{{group.groupLabel}} </span> <span
+                            style="font-size: 11px;font-style:italic"
+                            [matTooltip]="group.grpRoleStr">({{group.grpRoleStr}})</span>
+                    </mat-option>
+                </ng-container>
+
+            </mat-select><br>
+            <span style="font-weight: 500;">Group2:</span>
+            <mat-select class="min-select" [(ngModel)]="group2" (ngModelChange)="getSelectedGroupData()"
+                style="width: 200px;margin: 10px;" disableOptionCentering>
+                <mat-option>
+                    <ngx-mat-select-search placeholderLabel="Find GroupName..." [(ngModel)]="selectedGroup2"
+                        noEntriesFoundLabel='Groupname Not Found'>
+                    </ngx-mat-select-search>
+                </mat-option>
+                <ng-container *ngFor="let group of  groupNames">
+                    <mat-option  [style.background-color]="group.status== 'inactive'?'#efefef':'unset'" [style.color]="group.status=='inactive'?'lightslategray':'unset'"*ngIf="group.groupLabel?.toLowerCase().includes(selectedGroup2?.toLowerCase())"
+                        [value]="[group.groupLabel,group.grpRoleStr]">
+                        <span [matTooltip]="group.groupLabel">{{group.groupLabel}} </span> <span
+                            style="font-size: 11px;font-style:italic"
+                            [matTooltip]="group.grpRoleStr">({{group.grpRoleStr}})</span>
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </div>
+        <div class="viewer-container">
+            <div class="group-display-header-container">
+              
+                <div class="multi-group-data table-responsive">
+                    <table id='tableID' class="mb-0 align-middle table table-hover">
+                        <thead class="table-light">
+                           <tr>
+                               <ng-container *ngFor="let column of columns">
+                               <th>{{column.field}}</th>
+                            </ng-container>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <ng-container  *ngFor="let right of groupDetails">
+                            <tr [style.background-color]="right.usersCount==0?'#efefef':'unset'" [style.color]="right.usersCount==0?'lightslategray':'unset'">
+                                <ng-container *ngFor="let column of columns;">
+                                    <td>
+                                        {{right[column.actualName]}}</td>
+                                </ng-container>
+                            </tr>
+                           </ng-container>
+                        </tbody>
+                    </table>
+                   <div style="margin: 1rem; text-align: center;" *ngIf="groupDetails.length<=0">  
+                    <span>select a group to compare.</span>
+                     </div>
+                </div>
+            </div>
+            <button *ngIf="!loadingGroup" style="    position: absolute;
+            right: 9px;    background-color: white;
+            margin-top: -56px;" mat-stroked-button color="primary" class="clip-board" (click)="copyTokenToClipboard('tableID')" matTooltip="Copy to Clipboard" matTooltipPosition="above">
+                <mat-icon>content_copy</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="body-container">
+        <mat-tab-group mat-align-tabs="left" class="tab-group" style="height: 100vh;"
+            [(selectedIndex)]="selectedTabIndex">
+
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;" >
+                    <div class="noselect custom-mat-tab-label" [matTooltip]="'Portfolio cannot be compared'"
+                        style="background-color: #dfdfff;padding: 5px;display: flex;">
+                        <mat-icon style="color: #4169e1;" class="icon">group_work</mat-icon>
+                        <span class="title" style="margin: 3px;
+                    ">PORTFOLIO RIGHTS</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+
+                            <div class="section-content" *ngIf="selectedTabIndex==0 && !loadingGroup">
+                                <app-portfolio-display fxFlexFill [snapshotDate]="snapshotDate"
+                                    [groupLabels]="getTemplate(groupDetails[0]?.groupLabel,groupDetails[1]?.groupLabel)">
+                                </app-portfolio-display>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: rgba(208,189,244,.4196078431372549);padding:5px;display: flex;">
+                        <mat-icon style="    color: #9564f3;" class="icon">domain</mat-icon>
+                        <span class="title">COMBINED PORTFOLIO</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="selectedTabIndex==1 && !loadingGroup">
+                                <app-mxs-viewer-combainedportfolio fxFlexFill [snapshotDate]="snapshotDate"
+                                    [combainedGroupName]="getTemplate(groupDetails[0]?.groupLabel,groupDetails[1]?.groupLabel)">
+                                </app-mxs-viewer-combainedportfolio>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: #fff5df;padding:5px;display: flex;">
+                        <mat-icon class="icon" style="color: orange;">domain</mat-icon>
+                        <span class="title" style="margin: 3px;
+                    ">CHINESE WALL DEFINITIONS</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+
+                            <div class="section-content" *ngIf="!loadingGroup && selectedTabIndex==2">
+                                <app-mxs-viewer-chinese-wall-display fxFlexFill [snapshotDate]="snapshotDate"
+                                    [chineseWallTemplateName]="getTemplate(groupDetails[0]?.chineseWall,groupDetails[1]?.chineseWall)"
+                                    [combineTemplate]="" [allGroupselected]="">
+                                </app-mxs-viewer-chinese-wall-display>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: #dffff0;;padding:5px;display: flex;">
+                        <mat-icon class="icon" style="color: #29b674;">dvr</mat-icon>
+                        <span class="title">NAVIGATION RIGHTS</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="selectedTabIndex==3 && !loadingGroup">
+                                <app-mxs-viewer-navigation-display fxFlexFill [snapshotDate]="snapshotDate"
+                                    [navigationTemplateName]="getTemplate(groupDetails[0]?.navigationTmpl,groupDetails[1]?.navigationTmpl)"
+                                    [groupLabel]="" [combineTemplate]="" [allGroupselected]="">
+                                </app-mxs-viewer-navigation-display>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: #f1dfff;padding:5px ;display: flex;">
+                        <mat-icon class="icon" style="    color: #b656ff;
+        ">playlist_add_check</mat-icon>
+                        <span class="title" style="margin: 3px;
+                        ">OSP RIGHTS</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="!loadingGroup && selectedTabIndex==4">
+                                <app-mxs-viewer-osp-rights-display fxFlexFill [snapshotDate]="snapshotDate"
+                                    [ospRightsTemplateName]="getTemplate(groupDetails[0]?.ospRightTemplate,groupDetails[1]?.ospRightTemplate)"
+                                    [combineTemplate]="" [allGroupselected]="">
+                                </app-mxs-viewer-osp-rights-display>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab disabled>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: #ffdfea;padding:5px;display: flex;">
+                        <mat-icon class="icon" style="color: #f0558b;">security</mat-icon>
+                        <span class="title">STP RIGHTS</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="!loadingGroup && selectedTabIndex==5">
+                                <app-mxs-viewer-stp-rights-display fxFlexFill [snapshotDate]="snapshotDate"
+                                    [stpRightsTemplateName]="getTemplate(groupDetails[0]?.stpRgtTmpl,groupDetails[1]?.stpRgtTmpl)"
+                                    [combineTemplate]="" [allGroupselected]="">
+                                </app-mxs-viewer-stp-rights-display>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: #fcf6bd;padding:5px;display: flex;">
+                        <mat-icon class="icon" style="color: #a09217;">assessment</mat-icon>
+                        <span class="title">CONSISTENCY TEMPLATE</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="selectedTabIndex==6 && !loadingGroup">
+                                <app-mxs-viewer-consistency-display fxFlexFill [snapshotDate]="snapshotDate"
+                                    [consistencyTemplate]="getTemplate(groupDetails[0]?.consitencyTmpl,groupDetails[1]?.consitencyTmpl)"
+                                    [combineTemplate]="" [allGroupselected]="">
+                                </app-mxs-viewer-consistency-display>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style=" display: flex;   background-color: #c6f6fb;padding:5px">
+                        <mat-icon class="icon" style="color: #0fbed1;">build</mat-icon>
+                        <span class="title" style="margin: 3px;">OPERATION RIGHTS</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="selectedTabIndex==7 && !loadingGroup">
+                                <app-operation-rights fxFlexFill [snapshotDate]="snapshotDate"
+                                    [operationRightsTemplateName]="getTemplate(groupDetails[0]?.nkeyTmpl,groupDetails[1]?.nkeyTmpl)"
+                                    [operationRightsLposTemplateName]="getTemplate(groupDetails[0]?.lposRight,groupDetails[1]?.lposRight)"
+                                    [combineTemplate]="" [allGroupselected]="">
+                                </app-operation-rights>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: #daedfc;padding:5px;display: flex;">
+                        <mat-icon class="icon" style="color: #4169e1;">equalizer</mat-icon>
+                        <span class="title" style="margin: 3px;">FINANCE RIGHTS </span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="selectedTabIndex==8 && !loadingGroup">
+                                <app-finance-rights fxFlexFill [snapshotDate]="snapshotDate"
+                                    [financeRightsCtrlTemplateName]="getTemplate(groupDetails[0]?.accCtrl,groupDetails[1]?.accCtrl)"
+                                    [financeRightsStattmplTemplateName]="getTemplate(groupDetails[0]?.statTmpl,groupDetails[1]?.statTmpl)"
+                                    [combineTemplate]="" [allGroupselected]="">
+                                </app-finance-rights>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: #e9f8d7;padding:5px;display: flex;">
+                        <mat-icon class="icon" style="color: #4d6531;">settings_applications</mat-icon>
+                        <span class="title" style="margin: 3px;">CONFIGURATION MANAGEMENT RIGHTS</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="!loadingGroup && selectedTabIndex==9">
+                                <app-cwt-config-mgt-right-irs fxFlexFill [snapshotDate]="snapshotDate"
+                                    [configIrsTemplateName]="getTemplate(groupDetails[0]?.groupLabel,groupDetails[1]?.groupLabel)">
+                                </app-cwt-config-mgt-right-irs>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label style="padding: 0; margin: 0;">
+                    <div class="noselect custom-mat-tab-label"
+                        style="background-color: #eceaea;padding:5px;display: flex;">
+                        <mat-icon class="icon">business</mat-icon>
+                        <span class="title" style="margin: 3px;
+                            ">ENTERPRISE RISK MANAGEMENT</span>
+                    </div>
+                </ng-template>
+                <div class="tab-container">
+                    <div class="group-section-container cmb-section">
+
+                        <ng-container>
+                            <div class="section-content" *ngIf="!loadingGroup && selectedTabIndex==10">
+                                <app-enterprise-risk fxFlexFill [snapshotDate]="snapshotDate"
+                                    [enterpriseTemplateName]="getTemplate(groupDetails[0]?.groupLabel,groupDetails[1]?.groupLabel)">
+                                </app-enterprise-risk>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+
+
+        </mat-tab-group>
+
+    </div>
+</div>

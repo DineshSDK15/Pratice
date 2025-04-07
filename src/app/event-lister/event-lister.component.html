@@ -1,0 +1,18 @@
+<div class="main-container" >
+    <div class="header-container">
+        <span class="title">
+            <img [src]="user.img" alt="avatar">
+            {{user.name | titlecase}}</span>
+        <span>
+            <button class="button" (click)="createNewUser()"><mat-icon class="icon">add</mat-icon> Add Task</button>
+        </span>
+    </div>
+    <div  class="event-container">
+        <ng-container *ngFor="let task of tasks">
+            <div *ngIf="task.userId === user.id" class="events">
+                <app-events [task]="task"></app-events>
+            </div>
+        </ng-container>
+    
+    </div>
+</div>

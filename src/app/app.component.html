@@ -1,0 +1,17 @@
+<div class="outer-main-container">
+  <div class="header-container">
+    <app-header></app-header>
+  </div>
+  <div class="main-container">
+    <div class="side-nav">
+      <ng-container *ngFor="let user of users;let i = index">
+        <app-side-nav [user]="user" [avatar]="user.img" [isNewUser]="i == users.length-1" (getUserId)="selectUser($event)" (deleteUser)="removeUser($event)"></app-side-nav>
+      </ng-container>
+    </div>
+    <div class="task-content">
+      <app-event-lister [user]="selectedUser"></app-event-lister>
+    </div>
+  </div>
+</div>
+
+<!-- <h3>{{user().name}} from {{place()}}</h3> -->

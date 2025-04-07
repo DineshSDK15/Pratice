@@ -1,0 +1,25 @@
+    <mat-card class="card-container" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title class="title">
+            <div id="pointer" *ngIf="task.isCompleted"> <span>Completed</span></div>
+            <h2>{{task.title | uppercase}}</h2>
+            <span class="date-field" [style.color]="CheckDue(task.dueDate)">{{task.dueDate | date:'longDate'}}</span>
+        </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+           <div class="card-content">
+            <p>{{task.description | titlecase}}</p>
+           </div>
+        </mat-card-content>
+        <mat-card-footer >
+            <div class="card-footer">
+                
+                <button (click)="task.isCompleted = true" *ngIf="!task.isCompleted" class="complete-btn">
+                    <mat-icon class="icon done-icon">done_all</mat-icon> Complete
+                </button>
+                <button *ngIf="!task.isCompleted" class="edit-btn" (click)="openEditDialog()">
+                    <mat-icon class="icon edit-icon">edit</mat-icon> Edit
+                </button>
+            </div>
+        </mat-card-footer>
+      </mat-card>

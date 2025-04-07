@@ -1,0 +1,24 @@
+<div class="main-container">
+    <div class="header">
+        <h1>{{task.id ? 'Update task' + task.title : 'Create New Task'}}</h1>
+        <mat-divider></mat-divider>
+    </div>
+    <div class="content-container">
+        <div class="input-container">
+            <label for="title">Title :</label>
+            <input type="text" name="title" id="titlr" [(ngModel)]="task.title">
+        </div>
+        <div class="input-container">
+            <label for="description" >Description :</label>
+            <textarea type="text" name="description" id="description"  [(ngModel)]="task.description" rows="10" ></textarea>
+        </div>
+        <div class="input-container">
+            <label for="due">Due Date :</label>
+            <input type="date" name="due"  id="due" [(ngModel)]="task.dueDate">
+        </div>
+    </div>
+    <div class="footer">
+        <button class="button close-btn" (click)="closeDialog()">Close</button>
+        <button class="button create-btn" (click)="task.title || task.description || task.dueDate ? createTask() : ''" [disabled]="!task.title || !task.description || !task.dueDate">Create</button>
+    </div>
+</div>

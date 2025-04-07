@@ -1,0 +1,56 @@
+<div class="main-container" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
+    @if(!onedit){
+        <button (click)="emitUserId()" class="main-button">
+            <div>
+                <img [src]="avatar()" [alt]="user.name">
+            </div>
+            <span>
+                {{user.name | titlecase}}
+            </span>
+        </button>
+        <ng-container *ngIf="isHovered">
+        <button  mat-icon-button class="icon edit" (click)=" onedit = true;"><mat-icon>edit</mat-icon></button>
+        <button  mat-icon-button class="icon remove" (click)="removeUser()"><mat-icon>remove</mat-icon></button>
+    </ng-container>
+    }
+    @else{
+        <input type="text" [(ngModel)]="user.name">
+        <select name="profiles" id="profile" [(ngModel)]="user.img">
+           @for(profile of profiles;track profile.gender){
+            <option [value]="profile.pic">{{profile.gender}}</option>
+           }
+        </select>
+        <button  mat-icon-button class="icon submit" (click)="editUser()"><mat-icon>check</mat-icon></button>
+    }
+   
+</div>
+<div *ngIf="isNewUser" class="create-new-container" [style.background]="allowCreate ? '#A1D6E2' : 'none'">
+    <button (click)="allowCreate = true" class="main-button" *ngIf="!allowCreate">
+       <mat-icon class="add-icon">add</mat-icon> New user
+    </button>
+    <ng-container *ngIf="allowCreate">
+        <div class="input-container">
+            <label for="name">Name :</label>
+            <input type="text" name="name" [(ngModel)]="newUser.name" placeholder="Name">    
+        </div>
+        <div class="input-container">
+            <label for="role">Role :</label>
+            <input type="text" [(ngModel)]="newUser.role" name="role" placeholder="Role">    
+        </div>
+        <div class="input-container">
+            <label for="pic">Gender :</label>
+            <select name="profiles" id="profile" name="pic" [(ngModel)]="newUser.img" aria-placeholder="Gender">
+                <option value="" selected disabled>Select Gender</option>
+                @for(profile of profiles;track profile.gender){
+                 <option [value]="profile.pic">{{profile.gender}}</option>
+                }
+             </select>
+    
+        </div>
+         <div class="footer">
+            <button  mat-icon-button class="icon remove" (click)="allowCreate = false" ><mat-icon>clear</mat-icon></button>
+            <button  mat-icon-button class="icon submit" (click)="createUser()" [disabled]="!newUser.name || !newUser.img || !newUser.role"><mat-icon>check</mat-icon></button>   
+         </div>
+        
+    </ng-container>
+   </div>

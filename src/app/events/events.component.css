@@ -1,0 +1,75 @@
+.card-container{
+    background: #1995AD;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+.card-container:hover{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+.title{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+.date-field{
+    float: right;
+}
+:host ::ng-deep .mat-mdc-card-header-text {
+    width: 100%;
+}
+.card-content{
+    max-height: 5rem;
+    height: 100%;
+    overflow: auto;
+}
+.card-footer{
+    width: 100%;
+}
+.card-footer button{
+    float: right;
+    padding: 10px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    >.icon{
+        margin-right: 5px;
+    }
+    &:nth-child(2){
+        margin-right: 10px;
+    }
+}
+#pointer {
+    width: 100px;
+    height: 25px;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    background: #F1F1F2;
+    color: #1995AD;
+    text-align: center;
+    padding: auto;
+    font-weight: bold;
+    >span{
+        vertical-align: sub;
+    }
+  }
+  
+  #pointer:before {
+    content: "";
+    position: absolute;
+    right: -20px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 20px solid #F1F1F2;
+    border-top: 12px solid transparent;
+    border-bottom: 13px solid transparent;
+  }
+ 
+  

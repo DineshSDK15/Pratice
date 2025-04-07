@@ -1,0 +1,102 @@
+button{
+    cursor: pointer;
+    background: white;
+    color:#74d1d1;
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 5px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px;
+    transition: all 0.3s ease-out; 
+    white-space: nowrap;
+}
+.main-container:hover .main-button{
+    box-shadow: 1px 4px 5px #94ecec8e;
+    transform: scale(1.1);
+    color: white;
+    background:#74d1d1;
+}
+img{
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.main-container{
+    display: flex;
+    align-items: center;
+}
+.main-button{
+    min-width: 150px;
+    width: 100%;
+}
+.icon{
+    opacity: 0;
+}
+.edit{
+    color: blue;
+    transition: all 0.3s ease;
+}
+.remove{
+    color: red;
+    transition: all 0.3s ease;
+
+}
+.main-container:hover .icon{
+    opacity: 1;
+}
+.edit:hover{
+        background: blue;
+        color: white;
+    }
+.remove:hover{
+        background: red;
+        color: white;
+    }
+.submit:hover{
+    color: white;
+    background:green;
+}
+.create-new-container:hover .icon{
+    opacity: 1;
+}
+.submit{
+    color: green;
+}
+input,select{
+    height: 2rem;
+    max-width: 130px;
+    border-radius: 7px;
+    border: none;
+    margin: 10px;
+}
+.create-new-container{
+    max-width: 265px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+   border-radius: 10px;
+   margin: 10px;
+}
+.add-icon{
+    margin-right: 10px;
+}
+.footer{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+.input-container{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin:5px;
+    color: black;
+}
